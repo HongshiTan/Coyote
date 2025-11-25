@@ -120,7 +120,7 @@
 <li><p><strong>Vivado/Vitis</strong>: Coyote has to be built with the full Vivado suite, including Vitis HLS. Coyote supports Vivado/Vitis HLS &gt;= 2022.1. We have conducted extensive testing with Vivado 2024.1 and 2022.1, though other versions should work as well.
 All network-related Coyote configurations are built using the UltraScale+ Integrated 100G Ethernet Subsystem, for which a valid license must be obtained.</p></li>
 <li><p><strong>Hugepages enabled</strong></p></li>
-<li><p><strong>Additional information</strong>: For GPU peer-to-peer (P2P) support, Linux &gt;= 6.2 is required with AMD ROCm &gt;= 6.0.</p></li>
+<li><p><strong>Additional information</strong>: For GPU peer-to-peer (P2P) support, Linux &gt;= 6.2 is required with AMD ROCm &gt;= 6.0. If using Coyote’s Python run-time, pyCoyote, Python &gt;= 3.8 is required with pip installed.</p></li>
 </ul>
 </div></blockquote>
 </li>
@@ -155,6 +155,8 @@ All network-related Coyote configurations are built using the UltraScale+ Integr
 <p><strong>Example 9: Using the FPGA as a SmartNIC for Remote Direct Memory Access:</strong> How to do networking with Coyote’s internal, 100G, fully RoCEv2-compliant networking stack.</p>
 <p><strong>Example 10: Application reconfiguration and background services [ADVANCED]:</strong> How to dynamically load Coyote applications to a system-wide service, which automatically schedules tasks and reconfigures the FPGA with the corrects bitstream, based on client requests.</p>
 <p>Be sure to check out the accompanying README.md, in <strong>Coyote/examples</strong>, to get started with these examples and deploy them on your FPGA set-up.</p>
+<p>The above-mentioned examples include software examples in C++ as well as hardware examples in HLS and RTL. However, Coyote can also be used with Python via the pyCoyote library.
+The same examples, implement with Python instead of C++, can be found in the <a class="reference external" href="https://github.com/fpgasystems/pyCoyote">pyCoyote repository</a>.</p>
 </section>
 <section id="building-the-hardware">
 <h2>Building the hardware<a class="headerlink" href="#building-the-hardware" title="Link to this heading"></a></h2>
@@ -203,7 +205,7 @@ The following layers, each represented by an independent Vivado project, exist:<
 <span class="w">    </span><span class="s">VFPGA_C0_0</span><span class="w"> </span><span class="s2">&quot;&lt;some_path_to_the_cores&gt;/vector_add&quot;</span>
 <span class="w">    </span><span class="s">VFPGA_C0_1</span><span class="w"> </span><span class="s2">&quot;&lt;some_path_to_the_cores&gt;/shifter&quot;</span>
 <span class="w">    </span><span class="s">VFPGA_C1_0</span><span class="w"> </span><span class="s2">&quot;&lt;some_path_to_the_cores&gt;/neural_network&quot;</span>
-<span class="w">    </span><span class="s">VFPGA_C1_1</span><span class="w"> </span><span class="s2">&quot;&lt;some_path_to_the_cores&gt;/hyper_log_log&quot;</span>
+<span class="w">    </span><span class="s">VFPGA_C1_1</span><span class="w"> </span><span class="s2">&quot;&lt;some_path_to_the_cores&gt;/hyper_log_log &lt;some_path_to_a_library&gt;/library&quot;</span>
 <span class="p">)</span>
 
 <span class="c"># Generate all targets</span>
@@ -241,6 +243,7 @@ The hardware applications (in the provided path) should be structured as follows
 <p class="admonition-title">Note</p>
 <p>Be sure to create the <code class="docutils literal notranslate"><span class="pre">vfpga_top.svh</span></code>. This is the main integration header file. It is used to connect your circuits to the interfaces exposed by each vFPGA.</p>
 </div>
+<p>If you want to use hardware libraries as shared code in a vFPGA configuration from other folders, you can add them to the configuration as shown for <code class="docutils literal notranslate"><span class="pre">VFGPA_C1_1</span></code>. The library folder is assumed to have the same folder structure as the base source folder of the vFPGA config. However, only the base source folder has to have a <code class="docutils literal notranslate"><span class="pre">vfpga_top.svh</span></code> file.</p>
 <p>It is not necessary to use the <code class="docutils literal notranslate"><span class="pre">load_apps()</span></code> function. You can also integrate your circuits manually into the provided wrappers (available after the project creation step).</p>
 </section>
 <section id="build-process">

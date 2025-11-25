@@ -19,7 +19,7 @@ Coyote system requirements:
 
     * **Hugepages enabled**
 
-    * **Additional information**: For GPU peer-to-peer (P2P) support, Linux >= 6.2 is required with AMD ROCm >= 6.0. 
+    * **Additional information**: For GPU peer-to-peer (P2P) support, Linux >= 6.2 is required with AMD ROCm >= 6.0. If using Coyote's Python run-time, pyCoyote, Python >= 3.8 is required with pip installed.
 
 * Hardware:
 
@@ -61,6 +61,9 @@ Coyote currently includes ten examples, covering the following concepts:
 **Example 10: Application reconfiguration and background services [ADVANCED]:** How to dynamically load Coyote applications to a system-wide service, which automatically schedules tasks and reconfigures the FPGA with the corrects bitstream, based on client requests. 
 
 Be sure to check out the accompanying README.md, in **Coyote/examples**, to get started with these examples and deploy them on your FPGA set-up.
+
+The above-mentioned examples include software examples in C++ as well as hardware examples in HLS and RTL. However, Coyote can also be used with Python via the pyCoyote library.
+The same examples, implement with Python instead of C++, can be found in the `pyCoyote repository <https://github.com/fpgasystems/pyCoyote>`_.
 
 Building the hardware
 -----------------------
@@ -113,7 +116,7 @@ To build the hardware, one should provide a configuration via *CMake*. The follo
         VFPGA_C0_0 "<some_path_to_the_cores>/vector_add"
         VFPGA_C0_1 "<some_path_to_the_cores>/shifter"
         VFPGA_C1_0 "<some_path_to_the_cores>/neural_network"
-        VFPGA_C1_1 "<some_path_to_the_cores>/hyper_log_log"
+        VFPGA_C1_1 "<some_path_to_the_cores>/hyper_log_log <some_path_to_a_library>/library"
     )
 
     # Generate all targets
@@ -151,6 +154,8 @@ The hardware applications (in the provided path) should be structured as follows
             └ all RTL cores and files that might be used (.v, .sv, .svh, .vhd, ...) 
 
 .. note:: Be sure to create the ``vfpga_top.svh``. This is the main integration header file. It is used to connect your circuits to the interfaces exposed by each vFPGA.
+
+If you want to use hardware libraries as shared code in a vFPGA configuration from other folders, you can add them to the configuration as shown for ``VFGPA_C1_1``. The library folder is assumed to have the same folder structure as the base source folder of the vFPGA config. However, only the base source folder has to have a ``vfpga_top.svh`` file.
 
 It is not necessary to use the ``load_apps()`` function. You can also integrate your circuits manually into the provided wrappers (available after the project creation step).
 
